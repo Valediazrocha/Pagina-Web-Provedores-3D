@@ -1,0 +1,334 @@
+BEGIN TRANSACTION;
+CREATE TABLE chat_log (
+    id_chat      INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_cliente   INTEGER REFERENCES cliente(id_cliente) ON DELETE SET NULL,
+    pregunta     TEXT NOT NULL,
+    intencion    TEXT,
+    n_resultados INTEGER,
+    creado_en    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE cliente (
+    id_cliente   INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre       TEXT,
+    email        TEXT UNIQUE,
+    localidad    TEXT,                -- localidad de Bogotá donde busca
+    lat          REAL,
+    lng          REAL,
+    creado_en    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE marca (
+    id_marca  INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre    TEXT NOT NULL UNIQUE
+);
+INSERT INTO "marca" VALUES(1,'Centro3D');
+INSERT INTO "marca" VALUES(2,'Bambu Lab');
+INSERT INTO "marca" VALUES(3,'Zuluprints');
+CREATE TABLE material (
+    id_material   INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre        TEXT NOT NULL UNIQUE,              -- 'PLA', 'PLA+', 'PETG', 'ABS', ...
+    familia       TEXT NOT NULL,                     -- 'PLA', 'PETG', 'ABS', 'ASA', 'TPU', 'OTRO'
+    temp_boquilla TEXT,                              -- rango típico °C (referencial)
+    descripcion   TEXT,
+    uso_tipico    TEXT
+);
+INSERT INTO "material" VALUES(1,'PLA','PLA','190–220 °C','Fácil de imprimir, bajo warping, rígido pero frágil.','Prototipos, piezas decorativas, figuras');
+INSERT INTO "material" VALUES(2,'PLA+','PLA','200–230 °C','PLA reforzado: más resistente al impacto que el PLA estándar.','Piezas funcionales ligeras');
+INSERT INTO "material" VALUES(3,'PLA Lite','PLA','190–220 °C','Variante económica de PLA para impresión general.','Principiantes, prototipos');
+INSERT INTO "material" VALUES(4,'PLA Silk','PLA','200–230 °C','Acabado brillante tipo seda / metálico.','Decoración, regalos, lámparas');
+INSERT INTO "material" VALUES(5,'PLA Madera','PLA','190–220 °C','PLA con partículas de madera, acabado mate.','Decoración, maquetas');
+INSERT INTO "material" VALUES(6,'PLA Fibra de carbono','PLA','210–230 °C','PLA con fibra: más rígido y mate. Requiere boquilla endurecida.','Piezas rígidas');
+INSERT INTO "material" VALUES(7,'HT-PLA','PLA','200–230 °C','PLA de mayor resistencia térmica (tras recocido).','Piezas que soportan algo de calor');
+INSERT INTO "material" VALUES(8,'PLA HS','PLA','200–230 °C','PLA de alta velocidad de impresión.','Impresión rápida');
+INSERT INTO "material" VALUES(9,'HR-PLA','PLA','200–230 °C','PLA de alta resistencia.','Piezas funcionales');
+INSERT INTO "material" VALUES(10,'LW-PLA','PLA','210–240 °C','PLA ligero (espumado), baja densidad.','Aviones RC, piezas livianas');
+INSERT INTO "material" VALUES(11,'PETG','PETG','220–250 °C','Resistente, flexible y con buena adhesión entre capas; tolera algo de humedad y calor.','Piezas mecánicas, contenedores, uso exterior ligero');
+INSERT INTO "material" VALUES(12,'PETG Premium','PETG','220–250 °C','PETG de formulación mejorada.','Piezas mecánicas');
+INSERT INTO "material" VALUES(13,'PETG Fibra de carbono','PETG','230–255 °C','PETG con fibra: rígido y estable. Requiere boquilla endurecida.','Piezas estructurales');
+INSERT INTO "material" VALUES(14,'ABS','ABS','230–260 °C','Resistente al calor y al impacto; necesita cama caliente y cámara cerrada.','Piezas mecánicas, carcasas');
+INSERT INTO "material" VALUES(15,'ABS+','ABS','230–260 °C','ABS de formulación mejorada, menos warping.','Carcasas, piezas funcionales');
+INSERT INTO "material" VALUES(16,'ASA','ASA','240–260 °C','Como ABS pero resistente a UV y a la intemperie.','Uso exterior');
+INSERT INTO "material" VALUES(17,'TPU','TPU','210–240 °C','Flexible, elástico.','Sellos, fundas, piezas flexibles');
+INSERT INTO "material" VALUES(18,'Otro','OTRO',NULL,'Material no clasificado.',NULL);
+CREATE TABLE precio_historico (
+    id_historico   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_producto    INTEGER NOT NULL REFERENCES producto(id_producto) ON DELETE CASCADE,
+    precio         INTEGER NOT NULL CHECK (precio > 0),
+    precio_lista   INTEGER,
+    stock_estado   TEXT NOT NULL,
+    fecha          TEXT NOT NULL
+);
+INSERT INTO "precio_historico" VALUES(1,1,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(2,2,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(3,3,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(4,4,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(5,5,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(6,6,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(7,7,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(8,8,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(9,9,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(10,10,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(11,11,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(12,12,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(13,13,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(14,14,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(15,15,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(16,16,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(17,17,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(18,18,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(19,19,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(20,20,85000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(21,21,85000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(22,22,85000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(23,23,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(24,24,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(25,25,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(26,26,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(27,27,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(28,28,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(29,29,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(30,30,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(31,31,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(32,32,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(33,33,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(34,34,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(35,35,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(36,36,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(37,37,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(38,38,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(39,39,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(40,40,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(41,41,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(42,42,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(43,43,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(44,44,84000,NULL,'agotado','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(45,45,88000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(46,46,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(47,47,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(48,48,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(49,49,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(50,50,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(51,51,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(52,52,88000,119000,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(53,53,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(54,54,80000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(55,55,120000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(56,56,95000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(57,57,89000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(58,58,89000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(59,59,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(60,60,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(61,61,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(62,62,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(63,63,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(64,64,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(65,65,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(66,66,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(67,67,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(68,68,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(69,69,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(70,70,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(71,71,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(72,72,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(73,73,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(74,74,84000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(75,75,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(76,76,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(77,77,85000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(78,78,125000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(79,79,125000,NULL,'en_stock','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(80,80,60000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(81,81,89000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(82,82,89000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(83,83,89000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(84,84,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(85,85,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(86,86,84000,NULL,'desconocido','2026-11-03T20:00:00');
+INSERT INTO "precio_historico" VALUES(87,87,84000,NULL,'en_stock','2026-11-03T20:00:00');
+CREATE TABLE producto (
+    id_producto    INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_proveedor   INTEGER NOT NULL REFERENCES proveedor(id_proveedor) ON DELETE CASCADE,
+    id_marca       INTEGER REFERENCES marca(id_marca),
+    id_material    INTEGER REFERENCES material(id_material),
+    nombre         TEXT    NOT NULL,
+    sku            TEXT,
+    color          TEXT,
+    peso_kg        REAL    NOT NULL DEFAULT 1.0 CHECK (peso_kg > 0),
+    peso_estimado  INTEGER NOT NULL DEFAULT 0 CHECK (peso_estimado IN (0,1)), -- 1 = el sitio no lo indica
+    diametro_mm    REAL    NOT NULL DEFAULT 1.75,
+    url_producto   TEXT    NOT NULL,
+    imagen_url     TEXT,
+    precio_actual  INTEGER NOT NULL CHECK (precio_actual > 0),   -- COP, IVA incluido
+    precio_lista   INTEGER,                                      -- precio sin descuento (si aplica)
+    stock_estado   TEXT    NOT NULL DEFAULT 'desconocido'
+                   CHECK (stock_estado IN ('en_stock','agotado','desconocido')),
+    stock_unidades INTEGER,
+    fuente_fecha   TEXT    NOT NULL,                  -- ISO-8601 de la última lectura
+    activo         INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1)),
+    UNIQUE (id_proveedor, url_producto, color)
+);
+INSERT INTO "producto" VALUES(1,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Blanco',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(2,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Morado',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(3,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(4,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Rosado piel',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(5,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Transparente',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(6,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Gris',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(7,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Plateado',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(8,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Naranja',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(9,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Azul cielo',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(10,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Fucsia',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(11,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Bronce',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(12,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Negro',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(13,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde pastel',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(14,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde neón',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(15,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Naranja neón',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(16,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Amarillo',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(17,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde traslúcido',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(18,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Amarillo translúcido',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(19,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Beige',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(20,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Azul glitter',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,85000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(21,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde glitter',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,85000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(22,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Rojo glitter',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,85000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(23,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Azul marino',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(24,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Rojo',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(25,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Azul pastel',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(26,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Rosado pastel',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(27,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Dorado',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(28,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Lila',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(29,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Verde pino',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(30,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Morado translúcido',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(31,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Rojo translúcido',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(32,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Azul',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(33,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Limón',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(34,1,1,1,'Filamento PLA marca Centro3D 1 kg 1.75 mm','C3D-F-300-1','Café',1.0,0,1.75,'https://www.centroimpresion3d.com/producto/filamento-pla/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(35,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Blanco',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(36,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Gris',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(37,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Amarillo',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(38,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Negro',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(39,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Rojo',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(40,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Azul rey',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(41,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Verde pino',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(42,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Naranja',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(43,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Transparente',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(44,1,1,11,'Filamento PETG 1.75 mm marca Centro3D','C3D-F-303-1','Verde translúcido',1.0,1,1.75,'https://www.centroimpresion3d.com/producto/filamento-petg/',NULL,84000,NULL,'agotado',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(45,2,2,3,'Filamento Bambu Lab PLA Lite 1kg 1.75mm para Principiantes, Fácil de Imprimir y Compatible con AMS',NULL,NULL,1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-pla-lite-1-75-mm-1-kg',NULL,88000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(46,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Amarillo',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(47,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Azul',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(48,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Blanco',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(49,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Negro',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(50,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Rojo',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(51,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Marrón',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(52,2,2,11,'Filamento Bambu Lab PETG Basic 1.75 mm 1 kg Alta Resistencia',NULL,'Gris',1.0,0,1.75,'https://bambulabco.com/products/filamento-bambu-lab-petg-basic-1-75-mm-1-kg',NULL,88000,119000,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(53,3,3,15,'Filamento 3D ABS+ Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-abs-blanco/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(54,3,3,14,'Filamento 3D ABS Negro',NULL,'Negro',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-abs-negro/',NULL,80000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(55,3,3,4,'Filamento 3d bi color seda pla rojo dorado',NULL,'Rojo',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-bi-color-pla-silk/',NULL,120000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(56,3,3,9,'Filamento 3d PLA HR',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-hr-pla/',NULL,95000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(57,3,3,8,'Filamento 3D PLA HS Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-hs-blanco/',NULL,89000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(58,3,3,8,'Filamento 3D PLA HS Negro',NULL,'Negro',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-hs/',NULL,89000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(59,3,3,7,'Filamento 3D HT PLA Azul',NULL,'Azul',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-azul/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(60,3,3,7,'Filamento 3D HT PLA Azul Cielo',NULL,'Azul cielo',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-azul-cielo/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(61,3,3,7,'Filamento 3D HT PLA Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-blanco/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(62,3,3,7,'Filamento 3D HT PLA Blanco UV',NULL,'Blanco uv',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-blanco-uv/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(63,3,3,7,'Filamento 3D HT PLA Dorado',NULL,'Dorado',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-dorado/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(64,3,3,7,'Filamento 3D HT PLA Natural',NULL,'Natural',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-natural/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(65,3,3,7,'Filamento 3D HT PLA Negro',NULL,'Negro',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-ht-pla-negro/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(66,3,3,7,'Filamento 3D HT PLA Plateado',NULL,'Plateado',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-htpla-plateado/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(67,3,3,10,'Filamento 3D LW-PLA',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/lw-pla/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(68,3,3,11,'Filamento 3D PETG Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-blanco/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(69,3,3,11,'Filamento 3D PETG Dorado',NULL,'Dorado',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-dorado/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(70,3,3,16,'Filamento 3D ASA Negro',NULL,'Negro',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-asa-negro/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(71,3,3,11,'Filamento 3D PETG Amarillo',NULL,'Amarillo',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-amarillo/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(72,3,3,11,'Filamento 3D PETG Azul',NULL,'Azul',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-azul/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(73,3,3,11,'Filamento 3D PETG Gris',NULL,'Gris',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-gris/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(74,3,3,11,'Filamento 3D PETG Verde',NULL,'Verde',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-verde/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(75,3,3,11,'Filamento 3D PETG Natural',NULL,'Natural',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-natural/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(76,3,3,11,'Filamento 3D PETG Negro',NULL,'Negro',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-negro/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(77,3,3,12,'Filamento 3D PETG Premium Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/petg-premium-blanco/',NULL,85000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(78,3,3,13,'Filamento 3D PETG Fibra de Carbono',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-petg-fibra-de-carbono/',NULL,125000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(79,3,3,6,'Filamento 3D PLA Fibra de Carbono',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-fibra-de-carbono/',NULL,125000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(80,3,3,1,'Filamento 3D PLA Basico',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-basico/',NULL,60000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(81,3,3,5,'Filamento 3D PLA Madera',NULL,NULL,1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-madera/',NULL,89000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(82,3,3,5,'Filamento 3D PLA Madera Clara',NULL,'Madera clara',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-madera-clara/',NULL,89000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(83,3,3,5,'Filamento 3D PLA Madera Oscura',NULL,'Madera oscura',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-madera-oscura/',NULL,89000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(84,3,3,2,'Filamento 3D PLA+ Ocre',NULL,'Ocre',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-ocre/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(85,3,3,2,'Filamento 3D PLA+ Blanco',NULL,'Blanco',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-blanco/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(86,3,3,2,'Filamento 3D PLA+ Azul Mate',NULL,'Azul mate',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-azul-mate/',NULL,84000,NULL,'desconocido',NULL,'2026-11-03T20:00:00',1);
+INSERT INTO "producto" VALUES(87,3,3,2,'Filamento 3D PLA+ Azul','ZPLAAZUL','Azul',1.0,1,1.75,'https://zuluprints.co/producto/filamento-3d-pla-azul/',NULL,84000,NULL,'en_stock',NULL,'2026-11-03T20:00:00',1);
+CREATE TABLE proveedor (
+    id_proveedor   INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre         TEXT    NOT NULL UNIQUE,
+    slug           TEXT    NOT NULL UNIQUE,          -- 'centro3d', 'bambulab-colombia', 'zuluprints'
+    url_base       TEXT    NOT NULL,
+    plataforma     TEXT    NOT NULL CHECK (plataforma IN ('woocommerce','shopify','html')),
+    direccion      TEXT,
+    ciudad         TEXT    NOT NULL DEFAULT 'Bogotá D.C.' CHECK (ciudad = 'Bogotá D.C.'),  -- alcance: solo Bogotá
+    localidad      TEXT,
+    lat            REAL,                             -- aproximada (ver README)
+    lng            REAL,
+    es_online      INTEGER NOT NULL DEFAULT 0 CHECK (es_online IN (0,1)),  -- 1 = sin local físico verificado
+    valoracion     REAL    CHECK (valoracion IS NULL OR (valoracion BETWEEN 0 AND 5)), -- NULL = sin dato real
+    activo         INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0,1))
+);
+INSERT INTO "proveedor" VALUES(1,'Centro3D','centro3d','https://www.centroimpresion3d.com','woocommerce','Calle 116 #45-43, local 5','Bogotá D.C.','Zona norte (Calle 116)',4.7,-74.056,0,NULL,1);
+INSERT INTO "proveedor" VALUES(2,'Bambu Lab Colombia','bambulab-colombia','https://bambulabco.com','shopify','Tienda en línea (UNOTECNO S.A.S., Bogotá D.C.)','Bogotá D.C.',NULL,4.6097,-74.0817,1,NULL,1);
+INSERT INTO "proveedor" VALUES(3,'Zuluprints','zuluprints','https://zuluprints.co','woocommerce','Carrera 28 #67-20 (Barrios Unidos)','Bogotá D.C.','Barrios Unidos',4.6715,-74.072,0,NULL,1);
+CREATE TABLE scrape_run (
+    id_run            INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_proveedor      INTEGER REFERENCES proveedor(id_proveedor),
+    inicio            TEXT NOT NULL,
+    fin               TEXT,
+    estado            TEXT NOT NULL CHECK (estado IN ('ok','error','parcial')),
+    productos_leidos  INTEGER DEFAULT 0,
+    productos_nuevos  INTEGER DEFAULT 0,
+    precios_cambiados INTEGER DEFAULT 0,
+    mensaje           TEXT
+);
+CREATE INDEX ix_producto_material  ON producto(id_material);
+CREATE INDEX ix_producto_proveedor ON producto(id_proveedor);
+CREATE INDEX ix_producto_precio    ON producto(precio_actual);
+CREATE INDEX ix_producto_color     ON producto(color);
+CREATE INDEX ix_hist_producto_fecha ON precio_historico(id_producto, fecha);
+CREATE VIEW v_ofertas AS
+SELECT  p.id_producto,
+        p.nombre,
+        p.sku,
+        p.color,
+        p.peso_kg,
+        p.peso_estimado,
+        p.diametro_mm,
+        p.url_producto,
+        p.imagen_url,
+        p.precio_actual,
+        p.precio_lista,
+        CAST(ROUND(p.precio_actual / p.peso_kg) AS INTEGER) AS precio_por_kg,
+        p.stock_estado,
+        p.stock_unidades,
+        p.fuente_fecha,
+        m.nombre      AS material,
+        m.familia     AS familia_material,
+        mc.nombre     AS marca,
+        pr.id_proveedor,
+        pr.nombre     AS proveedor,
+        pr.slug       AS proveedor_slug,
+        pr.direccion  AS proveedor_direccion,
+        pr.localidad  AS proveedor_localidad,
+        pr.lat        AS proveedor_lat,
+        pr.lng        AS proveedor_lng,
+        pr.es_online  AS proveedor_online,
+        pr.valoracion AS proveedor_valoracion
+FROM producto p
+JOIN proveedor pr ON pr.id_proveedor = p.id_proveedor AND pr.activo = 1 AND pr.ciudad = 'Bogotá D.C.'
+LEFT JOIN material m  ON m.id_material = p.id_material
+LEFT JOIN marca    mc ON mc.id_marca   = p.id_marca
+WHERE p.activo = 1;
+CREATE VIEW v_mejor_precio AS
+SELECT material, color, MIN(precio_por_kg) AS mejor_precio_kg, COUNT(*) AS n_ofertas
+FROM v_ofertas
+WHERE stock_estado <> 'agotado'
+GROUP BY material, color;
+DELETE FROM "sqlite_sequence";
+INSERT INTO "sqlite_sequence" VALUES('proveedor',3);
+INSERT INTO "sqlite_sequence" VALUES('material',18);
+INSERT INTO "sqlite_sequence" VALUES('marca',90);
+INSERT INTO "sqlite_sequence" VALUES('producto',87);
+INSERT INTO "sqlite_sequence" VALUES('precio_historico',87);
+COMMIT;
